@@ -172,7 +172,7 @@ uint32_t get_call_stack_size(ijvm* m);
 // this method must return true on a reference to that cell
 //  *until* the next NEWARRAY instruction (which may reuse the reference)
 //
-bool is_heap_freed(ijvm* m, int32_t reference);
+bool is_heap_freed(ijvm* m, uint32_t reference);
 
 // Only needed for precise garbage collection bonus
 // using ANEWARRAY, AIALOAD and AIASTORE

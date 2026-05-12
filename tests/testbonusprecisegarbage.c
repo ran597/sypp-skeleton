@@ -14,14 +14,14 @@ void testPreciseGC(void) {
 	assert(tos(m) == 32);
 	step(m);
 	assert(is_tos_reference(m));
-	word ref1 = tos(m);
+	int32_t ref1 = tos(m);
 	steps(m, 2);
 	assert(!is_tos_reference(m));
 	step(m);
 	assert(is_heap_freed(m, ref1));
 
 	steps(m, 3);
-	word ref2 = tos(m);
+	int32_t ref2 = tos(m);
 	step(m);
 	assert(tos(m) == 42);
 	step(m);
@@ -33,7 +33,7 @@ void testPreciseGC(void) {
 	assert(is_heap_freed(m, ref2));
 
 	steps(m, 3);
-	word ref3 = tos(m);
+	int32_t ref3 = tos(m);
 	steps(m, 3);
 	assert(!is_heap_freed(m, ref3));
 	steps(m, 2);
@@ -44,7 +44,7 @@ void testPreciseGC(void) {
 	step(m);
 	assert(tos(m) == 8);
 	step(m);
-	word ref4 = tos(m);
+	int32_t ref4 = tos(m);
 	steps(m, 4);
 	assert(tos(m) == ref4);
 	assert(!is_heap_freed(m, ref4));
@@ -53,7 +53,7 @@ void testPreciseGC(void) {
 	assert(is_heap_freed(m, ref4));
 
 	steps(m, 3);
-	word ref5 = tos(m);
+	int32_t ref5 = tos(m);
 	step(m);
 	assert(tos(m) == 0);
 	steps(m, 2);

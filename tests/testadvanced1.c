@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include "../include/ijvm.h"
@@ -86,8 +87,8 @@ void test_wide4(void)
     ijvm* m = init_ijvm("files/advanced/test-wide4.ijvm",stdin,output);
     assert(m != NULL);
 
-    word foo_const = 0xDEADBEEF;
-    word bar_const = 0xABADBABE;
+    int32_t foo_const = 0xDEADBEEF;
+    int32_t bar_const = 0xABADBABE;
 
 
     while (OP_IRETURN != get_instruction(m))

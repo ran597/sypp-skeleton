@@ -8,7 +8,7 @@
 
 ijvm* init_ijvm(char *binary_path, FILE* input, FILE* output)
 {
-  // do not change these first three lines
+  // do not change the lines above "TODO: implement me"
   ijvm* m = (ijvm *) malloc(sizeof(ijvm));
   // note that malloc gives you memory, but gives no guarantees on the initial
   // values of that memory. It might be all zeroes, or be random data.
@@ -110,10 +110,10 @@ uint32_t get_call_stack_size(ijvm* m)
 
 // Checks if reference is a freed heap array. Note that this assumes that 
 // 
-bool is_heap_freed(ijvm* m, int32_t reference) 
+bool is_heap_freed(ijvm* m, uint32_t reference) 
 {
    // TODO: implement me if doing garbage collection bonus
-   return 0;
+   return false;
 }
 
 // Checks if top of stack is a reference
@@ -121,5 +121,5 @@ bool is_tos_reference(ijvm* m)
 {
 	// TODO: implement me if doing precise garbage collection bonus
 	//  using ANEWARRAY, AIALOAD and AIASTORE
-	return 0;
+	return false;
 }
