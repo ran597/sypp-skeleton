@@ -44,6 +44,8 @@
 #define OP_ANEWARRAY      (0xBD)
 #define OP_AIALOAD        (0x32)
 #define OP_AIASTORE       (0x53)
+#define OP_STACKTRACE     (0x38)
+
 
 #define OP_GC             (0xD4)
 
