@@ -18,6 +18,12 @@ ijvm* init_ijvm(char *binary_path, FILE* input, FILE* output)
   m->out = output;
   
   // TODO: implement me
+  m->constant_pool = NULL;
+  m->constant_pool_size = 0;
+  m->text_data = NULL;
+  m->text_size = 0;
+
+
   FILE *fp = fopen(binary_path, "rb");
   uint8_t numbuf[4];
 
@@ -25,6 +31,8 @@ ijvm* init_ijvm(char *binary_path, FILE* input, FILE* output)
   uint32_t number = read_uint32(numbuf);
 
   if (number != 0x1DEADFAD){
+    free(m);
+    fclose(fp); 
     return NULL;
   }
 
