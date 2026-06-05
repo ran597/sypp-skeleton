@@ -18,6 +18,47 @@ ijvm* init_ijvm(char *binary_path, FILE* input, FILE* output)
   m->out = output;
   
   // TODO: implement me
+  FILE *fp = fopen(binary_path, "rb");
+  uint8_t numbuf[4];
+
+  fread(numbuf, sizeof(uint8_t), 4, fp);
+  uint32_t number = read_uint32(numbuf);
+
+  if (number != 0x1DEADFAD){
+    return NULL;
+  }
+
+  //constant pool orgin
+
+  fread(numbuf, sizeof(uint8_t), 4, fp);
+
+  //constant pool size
+  fread(numbuf, sizeof(uint8_t), 4, fp);
+  uint32_t constSize = read_uint32(numbuf);
+
+  //constant pool data
+  m->constant_pool_size = constSize; 
+
+  m->constant_pool = malloc(constSize); 
+
+  fread(m->constant_pool, sizeof(uint8_t),constSize, fp);
+
+  //text block orgin
+  fread(numbuf, sizeof(uint8_t), 4, fp);
+
+ //text block size
+  fread(numbuf, sizeof(uint8_t), 4, fp);
+  uint32_t textSize = read_uint32(numbuf);
+
+  //text bloack data
+  m->text_size = textSize;
+
+  m->text_data = malloc(textSize);
+
+  fread(m->text_data, sizeof(uint8_t), textSize, fp);
+
+
+  fclose(fp);
 
   return m;
 }
