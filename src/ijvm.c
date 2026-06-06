@@ -74,6 +74,8 @@ ijvm* init_ijvm(char *binary_path, FILE* input, FILE* output)
 void destroy_ijvm(ijvm* m) 
 {
   // TODO: implement me
+  free(m->constant_pool);
+  free(m->text_data);
 
   free(m); // free memory for struct
 }
@@ -81,19 +83,19 @@ void destroy_ijvm(ijvm* m)
 uint8_t *get_text(ijvm* m) 
 {
   // TODO: implement me
-  return NULL;
+  return m->text_data;
 }
 
 uint32_t get_text_size(ijvm* m) 
 {
   // TODO: implement me
-  return 0;
+  return m->text_size;
 }
 
 int32_t get_constant(ijvm* m, uint32_t i) 
 {
   // TODO: implement me
-  return 0;
+  return read_uint32(&m->constant_pool[i*4]);
 }
 
 uint32_t get_program_counter(ijvm* m) 
