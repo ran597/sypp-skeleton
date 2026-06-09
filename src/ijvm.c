@@ -107,7 +107,7 @@ int32_t get_constant(ijvm* m, uint32_t i)
 uint32_t get_program_counter(ijvm* m) 
 {
   // TODO: implement me
-  return m->stackCapacity;
+  return m->pc;
 }
 
 int32_t tos(ijvm* m) 
@@ -169,7 +169,7 @@ void stack_push(ijvm* m, int32_t value)
 void step(ijvm* m) 
 {
   // TODO: implement me
-  uint8_t instruction = getinstruction(m);
+  uint8_t instruction = get_instruction(m);
 
   m->pc++;
 
