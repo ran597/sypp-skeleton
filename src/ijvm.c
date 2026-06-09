@@ -81,6 +81,7 @@ void destroy_ijvm(ijvm* m)
   // TODO: implement me
   free(m->constant_pool);
   free(m->text_data);
+  free(m->Stack);
 
   free(m); // free memory for struct
 }
