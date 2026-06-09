@@ -22,6 +22,11 @@ ijvm* init_ijvm(char *binary_path, FILE* input, FILE* output)
   m->constant_pool_size = 0;
   m->text_data = NULL;
   m->text_size = 0;
+  m->Stack = malloc(m->stackSize * sizeof(int32_t));
+  m->stackSize = 128;
+  m->stackCapacity = 0;
+  m->pc = 0;
+  m->is_halted = false;
 
 
   FILE *fp = fopen(binary_path, "rb");
@@ -101,20 +106,28 @@ int32_t get_constant(ijvm* m, uint32_t i)
 uint32_t get_program_counter(ijvm* m) 
 {
   // TODO: implement me
-  return 0;
+  return m->stackCapacity;
 }
 
 int32_t tos(ijvm* m) 
 {
   // this operation should NOT pop (remove top element from stack)
   // TODO: implement me
-  return -1;
+  return m->Stack[m->stackSize - 1];
 }
 
 bool finished(ijvm* m) 
 {
   // TODO: implement me
-  return false;
+  if (get_program_counter(m) >= get_text_size(m)) {
+        return true;
+    }
+
+  if (m->is_halted == true) {
+      return true;
+    }
+
+    return false;
 }
 
 int32_t get_local_variable(ijvm* m, uint32_t i) 
@@ -123,9 +136,151 @@ int32_t get_local_variable(ijvm* m, uint32_t i)
   return 0;
 }
 
+int32_t stack_pop(ijvm* m) 
+{
+    if(m->stackSize == 0){
+      return 0;
+    }
+    else{
+      m->stackSize--;
+      return m->Stack[m->stackSize];
+    }
+}
+
+int32_t stack_top(ijvm* m) 
+{
+    return m->Stack[m->stackSize - 1];
+}
+
+void stack_push(ijvm* m, int32_t value) 
+{
+    if (m->stackSize >= m->stackCapacity) 
+    {
+        m->stackCapacity *= 2;
+        m->Stack = realloc(m->Stack, m->stackCapacity * sizeof(int32_t));
+    }
+    
+    m->Stack[m->stackSize] = value;
+    m->stackSize++;
+}
+
+
 void step(ijvm* m) 
 {
   // TODO: implement me
+  uint8_t instruction = getinstruction(m);
+
+  m->pc++;
+
+  switch(instruction)
+  {
+    case OP_BIPUSH: 
+      {
+        uint8_t raw_byte = get_text(m)[get_program_counter(m)];
+        m->pc++; 
+        int8_t signed_byte = (int8_t)raw_byte;
+        stack_push(m, (int32_t)signed_byte);
+      }
+      break;
+    
+    case OP_DUP: 
+      {
+        stack_push(m, stack_top(m));
+      }
+      break;
+
+    case OP_IADD: 
+      {
+        int32_t val2 = stack_pop(m);
+        int32_t val1 = stack_pop(m);
+        stack_push(m, val1 + val2);
+      }
+      break;
+      
+    case OP_ISUB: 
+      {
+        int32_t val2 = stack_pop(m);
+        int32_t val1 = stack_pop(m);
+        stack_push(m, val1 - val2);
+      }
+      break;
+
+    case OP_IAND: 
+      {
+        int32_t val2 = stack_pop(m);
+        int32_t val1 = stack_pop(m);
+        stack_push(m, val1 & val2);
+      }
+      break;
+
+    case OP_IOR: 
+      {
+        int32_t val2 = stack_pop(m);
+        int32_t val1 = stack_pop(m);
+        stack_push(m, val1 | val2);
+      }
+      break;
+
+    case OP_POP: 
+      {
+        stack_pop(m);
+      }
+      break;
+
+    case OP_SWAP: 
+      {
+        int32_t top_val = stack_pop(m);
+        int32_t second_val = stack_pop(m);
+        stack_push(m, top_val);
+        stack_push(m, second_val);
+      }
+      break;
+
+    case OP_NOP: 
+      break;
+
+    case OP_ERR: 
+      {
+        fprintf(m->out, "Error\n");
+        m->is_halted = true; 
+      }
+      break;
+      
+    case OP_HALT: 
+      {
+        m->is_halted = true;
+      }
+      break;
+
+    case OP_IN: 
+      {
+        int ch = fgetc(m->in);
+        if (ch == EOF) 
+        {
+          stack_push(m, 0);
+        } 
+        else 
+        {
+          stack_push(m, ch);
+        }
+      }
+      break;
+
+    case OP_OUT: 
+      {
+        int32_t val = stack_pop(m);
+        fprintf(m->out, "%c", val);
+        fflush(m->out);
+      }
+      break;
+
+    default:
+      {
+        m->is_halted = true;
+      }
+      break;
+    
+  }
 
 }
 

@@ -20,7 +20,13 @@ typedef struct IJVM {
 
     uint8_t *text_data;
     uint32_t text_size;
-    
+
+
+    int32_t* Stack; 
+    uint32_t stackSize;
+    uint32_t stackCapacity;
+    uint32_t pc;
+    bool is_halted;
 
 } ijvm;
 
